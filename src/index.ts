@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 /* Routes */
-app.use("/", router());
+app.use("/api/v1/", router());
 
 /* server start */
 const port = process.env.PORT;

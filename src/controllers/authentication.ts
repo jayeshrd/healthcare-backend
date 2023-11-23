@@ -4,8 +4,8 @@ import { random, authentication } from "../utils/auth";
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password, username } = req.body;
-    if (!email || !password || !username) {
+    const { email, password, firstName, lastName } = req.body;
+    if (!email || !password || !firstName || !lastName) {
       return res
         .status(400)
         .send({ message: "send email, password and username" });
@@ -17,7 +17,8 @@ export const register = async (req: express.Request, res: express.Response) => {
     const salt = random();
     const user = await createUser({
       email,
-      username,
+      firstName,
+      lastName,
       authentication: {
         salt,
         password: authentication(salt, password),
