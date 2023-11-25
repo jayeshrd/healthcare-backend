@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { random, authentication } from "../utils/auth";
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -30,7 +31,37 @@ export const getUserBySessionToken = (sessionToken: string) =>
   });
 export const getUserById = (id: string) => UserModel.findById(id);
 export const deleteUserById = (id: string) => UserModel.findByIdAndRemove(id);
-export const createUser = (values: Record<string, any>) =>
-  new UserModel(values).save().then((user) => user.toObject());
+
+export const createUser = (values: Record<string, any>) => {
+  let { email, password, firstName, lastName } = values;
+  if (!validateEmail(email) || !validatePassword(password))
+    throw new Error("invalid email or password format");
+
+  firstName = firstName.trim();
+  lastName = lastName.trim();
+  const salt = random();
+  return new UserModel({
+    firstName,
+    lastName,
+    email,
+    authentication: {
+      salt,
+      password: authentication(salt, password),
+    },
+  })
+    .save()
+    .then((user) => user.toObject());
+};
+
 export const updateUser = (id: string, values: Record<string, any>) =>
   UserModel.findByIdAndUpdate(id, values);
+
+// extra utils
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  return emailRegex.test(email);
+};
+const validatePassword = (password: string): boolean => {
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+  return passwordRegex.test(password);
+};

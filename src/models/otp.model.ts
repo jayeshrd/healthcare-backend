@@ -21,7 +21,21 @@ otpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 300 });
 export const OtpModel = mongoose.model("OTP", otpSchema);
 
 //utils
-// Define a function to send emails
+export const createOTP = (email: string, otp: number) =>
+  new OtpModel({ email, otp }).save();
+export const verifyOtpWithEmail = async (email: string, otp: number) => {
+  try {
+    const foundOtp = await OtpModel.findOne({
+      email,
+      otp,
+    });
+    if (!foundOtp) {
+      throw new Error("Invalid OTP");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 export const sendOtpToEmail = async (email: string, otp: number) => {
   try {
     const mailResponse = await mailSender(
