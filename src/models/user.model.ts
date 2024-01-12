@@ -30,7 +30,7 @@ export const getUserBySessionToken = (sessionToken: string) =>
     "authentication.sessionToken": sessionToken,
   });
 export const getUserById = (id: string) => UserModel.findById(id);
-export const deleteUserById = (id: string) => UserModel.findByIdAndRemove(id);
+// export const deleteUserById = (id: string) => UserModel.findByIdAndRemove(id);
 
 export const createUser = (values: Record<string, any>) => {
   let { email, password, firstName, lastName } = values;
