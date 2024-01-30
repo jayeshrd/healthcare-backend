@@ -14,6 +14,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    require: true,
+    default:"user"
+  },
+  status: {
+    type: String,
+    require: true,
+    default:"Active"
+  },
   authentication: {
     password: { type: String, required: true, select: false },
     salt: { type: String, select: false },
@@ -33,7 +43,7 @@ export const getUserById = (id: string) => UserModel.findById(id);
 // export const deleteUserById = (id: string) => UserModel.findByIdAndRemove(id);
 
 export const createUser = (values: Record<string, any>) => {
-  let { email, password, firstName, lastName } = values;
+  let { email, password, firstName, lastName,role,status } = values;
   if (!validateEmail(email) || !validatePassword(password))
     throw new Error("invalid email or password format");
 
@@ -44,6 +54,8 @@ export const createUser = (values: Record<string, any>) => {
     firstName,
     lastName,
     email,
+    role,
+    status,
     authentication: {
       salt,
       password: authentication(salt, password),
@@ -53,8 +65,8 @@ export const createUser = (values: Record<string, any>) => {
     .then((user) => user.toObject());
 };
 
-export const updateUser = (id: string, values: Record<string, any>) =>
-  UserModel.findByIdAndUpdate(id, values);
+export const updateUserData = (id: string, values: Record<string, any>) =>
+  UserModel.findByIdAndUpdate(id, values, { new: true });
 
 // extra utils
 const validateEmail = (email: string): boolean => {

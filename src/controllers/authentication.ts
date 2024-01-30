@@ -5,11 +5,18 @@ import { createNewUser } from "../utils/usersAuth";
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
-    if (!email || !password || !firstName || !lastName) {
+    const { email, password, firstName, lastName, role, status } = req.body;
+    if (!email || !password || !firstName || !lastName || !role || !status) {
       throw new Error("send email, password and username");
     }
-    const user = await createNewUser(email, password, firstName, lastName);
+    const user = await createNewUser(
+      email,
+      password,
+      firstName,
+      lastName,
+      role,
+      status
+    );
 
     return res.send({ message: "Success", data: user });
   } catch (error) {

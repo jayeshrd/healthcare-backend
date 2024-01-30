@@ -35,14 +35,42 @@ const labVendorSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  labAvailability: {
-    type: String,
-    required: true,
-  },
+  // labAvailability: {
+  //   type: String,
+  //   required: true,
+  // },
+  labAvailability: [
+    {
+      day: {
+        type: String,
+        required: true,
+        default:""
+      },
+      from: {
+        type: String,
+        required: false,
+        default:""
+      },
+      to: {
+        type: String,
+        required: false,
+        default:""
+      },
+    },
+  ],
   labDocument: {
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    default:"pending"
+  },
+  remark: {
+    type: String,
+    default:" "
+  },
+
 });
 export const labVendor = mongoose.model("labVendor", labVendorSchema);
 
@@ -58,6 +86,7 @@ export const createVendor = async (values: Record<string, any>) => {
     licenceNumber,
     labAvailability,
     labDocument,
+    remark
   } = values;
 
 
@@ -73,6 +102,7 @@ export const createVendor = async (values: Record<string, any>) => {
       licenceNumber,
       labAvailability,
       labDocument,
+      remark,
     });
 
 
@@ -84,6 +114,13 @@ export const createVendor = async (values: Record<string, any>) => {
 };
 
 export const getVendors = () => labVendor.find();
+
+// export const updateVendorDb = (id: string, values: Record<string, any>) =>
+//   labVendor.findByIdAndUpdate(id, values);
+
+export const updateVendorDb = (id: string, values: Record<string, any>) =>
+  labVendor.findByIdAndUpdate(id, values, { new: true });
+
 //  export const createLabVendor = async(labVendorBody:any) =>{
 //   return LabVendor.create(labVendorBody);
 // }

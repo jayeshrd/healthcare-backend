@@ -28,7 +28,7 @@ export const mailSender = async (
       subject: title,
       html: body,
     });
-    console.log("Email info: ", info);
+    // console.log("Email info: ", info);
     return { success: true, data: info };
   } catch (error) {
     console.error(error.message);
