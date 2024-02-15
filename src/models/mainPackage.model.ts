@@ -49,7 +49,7 @@ export const createMainPackage = async (values:any) => {
         $push: {
           contents: {
             title: subTitle,
-            href: "hh.com",
+            href: subTitle +".com",
           },
         },
       },
