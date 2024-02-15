@@ -9,10 +9,20 @@ const labVendorSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  labServices: {
-    type: String,
-    required: true,
-  },
+  labServices: [
+    {
+      value: {
+        type: String,
+        required: false,
+        default: "",
+      },
+      label: {
+        type: String,
+        required: false,
+        default: "",
+      },
+    },
+  ],
   labEmail: {
     type: String,
     required: true,
@@ -44,17 +54,17 @@ const labVendorSchema = mongoose.Schema({
       day: {
         type: String,
         required: true,
-        default:""
+        default: "",
       },
       from: {
         type: String,
         required: false,
-        default:""
+        default: "",
       },
       to: {
         type: String,
         required: false,
-        default:""
+        default: "",
       },
     },
   ],
@@ -64,13 +74,12 @@ const labVendorSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    default:"pending"
+    default: "pending",
   },
   remark: {
     type: String,
-    default:" "
+    default: " ",
   },
-
 });
 export const labVendor = mongoose.model("labVendor", labVendorSchema);
 
@@ -86,9 +95,8 @@ export const createVendor = async (values: Record<string, any>) => {
     licenceNumber,
     labAvailability,
     labDocument,
-    remark
+    remark,
   } = values;
-
 
   try {
     const newLabVendor = await labVendor.create({
@@ -105,7 +113,6 @@ export const createVendor = async (values: Record<string, any>) => {
       remark,
     });
 
-
     return newLabVendor.toObject();
   } catch (error) {
     console.error("Error creating vendor:", error);
@@ -120,6 +127,18 @@ export const getVendors = () => labVendor.find();
 
 export const updateVendorDb = (id: string, values: Record<string, any>) =>
   labVendor.findByIdAndUpdate(id, values, { new: true });
+
+export const deleteVendorById = async (id: string) => {
+  try {
+    const deletedVendor = await labVendor.findByIdAndDelete(id);
+    if (!deletedVendor) {
+      throw new Error("Vendor not found");
+    }
+    return deletedVendor;
+  } catch (error) {
+    throw new Error(`Failed to delete vendor: ${error.message}`);
+  }
+};
 
 //  export const createLabVendor = async(labVendorBody:any) =>{
 //   return LabVendor.create(labVendorBody);

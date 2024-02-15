@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-import { promisify } from 'util';
+import { promisify } from "util";
 
 // Assuming you have the packages model defined somewhere
 // import packages from './package';
@@ -8,34 +8,34 @@ const packagesSchema = mongoose.Schema({
   title: {
     type: String,
     required: false,
-    default:""
+    default: "",
   },
   imgurl: {
     type: String,
     required: false,
-    default:""
+    default: "",
   },
   href: {
     type: String,
     required: false,
-    default:""
+    default: "",
   },
   description: {
     type: String,
     required: false,
-    default:""
+    default: "",
   },
   contents: [
     {
       title: {
         type: String,
         required: false,
-        default:""
+        default: "",
       },
       href: {
         type: String,
         required: false,
-        default:""
+        default: "",
       },
     },
   ],
@@ -43,12 +43,15 @@ const packagesSchema = mongoose.Schema({
 export const packages = mongoose.model("packages", packagesSchema);
 
 export const createPackages = async (values: Record<string, any>) => {
-  let { title, imgurl, href, description, contents } =
-    values;
+  let { title, imgurl, href, description, contents } = values;
 
   try {
     const newPackages = await packages.create({
-      title, imgurl, href, description, contents
+      title,
+      imgurl,
+      href,
+      description,
+      contents,
     });
 
     return newPackages.toObject();
@@ -60,19 +63,16 @@ export const createPackages = async (values: Record<string, any>) => {
 
 export const getPackage = () => packages.find();
 
-
-
-
 // const updateOneAsync = promisify(packages.updateOne.bind(packages));
 const updateOneAsync = promisify(packages.updateOne.bind(packages));
 
-
-
-
-export const updatePackageDb = async (id: string, values: Record<string, any>) => {
+export const updatePackageDb = async (
+  title: string,
+  values: Record<string, any>
+) => {
   try {
-    const result = await updateOneAsync(
-      { _id: id },
+    const result = await packages.updateOne(
+      { title: title },
       {
         $push: {
           contents: {
@@ -89,7 +89,6 @@ export const updatePackageDb = async (id: string, values: Record<string, any>) =
     console.error(err);
     throw err; // Propagate the error
   }
-  
 };
 
 // export const updatePackageDb = (id: string, values: Record<string, any>) =>

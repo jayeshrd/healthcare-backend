@@ -65,8 +65,52 @@ export const createUser = (values: Record<string, any>) => {
     .then((user) => user.toObject());
 };
 
-export const updateUserData = (id: string, values: Record<string, any>) =>
-  UserModel.findByIdAndUpdate(id, values, { new: true });
+// export const updateUserData = async (id: string, values: Record<string, any>) => {
+//   try {
+//     const updatedUser = await UserModel.findByIdAndUpdate(id, values, { new: true });
+// console.log(values);
+
+//     // Log the updated values
+//     console.log('Updated User Data:', updatedUser);
+    
+//     return updatedUser; // Optional: Return the updated user data
+//   } catch (error) {
+//     console.error('Error updating user data:', error);
+//     throw error; // Optional: Rethrow the error or handle it as needed
+//   }
+// };
+
+
+export const updateUserData = async (id: string, values: Record<string, any>) => {
+  try {
+    if (values.password) {
+      // If password is provided in the values, update password
+      if (!validatePassword(values.password)) {
+        throw new Error("Invalid password format");
+      }
+      if (!validateEmail(values.email)) {
+        throw new Error("Invalid email format");
+      }
+      const salt = random();
+      values.authentication = {
+        salt,
+        password: authentication(salt, values.password),
+      };
+      delete values.password; // Remove plain password from values
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(id, values, { new: true });
+
+    // Log the updated values
+    console.log('Updated User Data:', updatedUser);
+
+    return updatedUser; // Optional: Return the updated user data
+  } catch (error) {
+    console.error('Error updating user data:', error);
+    throw error; // Optional: Rethrow the error or handle it as needed
+  }
+};
+
 
 // extra utils
 const validateEmail = (email: string): boolean => {

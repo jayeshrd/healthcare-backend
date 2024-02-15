@@ -42,13 +42,17 @@ export const updatePackage = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const id = req.params.id;
-console.log("content",req.body);
+
+  const title = req.headers.title;
 
   try {
-    const updatedPackage = await updatePackageDb(id, req.body);
-    console.log("🚀 ~ updatedPackage:", updatedPackage)
-   
+    if (!title || typeof title !== 'string') {
+      return res.status(400).json({ error: 'Invalid or missing title in headers' });
+    }
+
+    const updatedPackage = await updatePackageDb(title, req.body);
+    console.log("🚀 ~ updatedPackage:", updatedPackage);
+
     if (updatedPackage) {
       return res.status(200).json(updatedPackage);
     } else {
@@ -59,4 +63,3 @@ console.log("content",req.body);
     return res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 };
-

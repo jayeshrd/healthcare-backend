@@ -5,5 +5,5 @@ import express from 'express';
 export default (router:express.Router) => {
     router.post("/package/register",createPackagesController)
     router.get("/package/getPackage",getAllPackage)
-    router.put("/package/update/:id",updatePackage)
+    router.put("/package/update",updatePackage)
 }
