@@ -41,15 +41,18 @@ export const createMainPackage = async (values:any) => {
     const newMainPackage = await mainPackage.create({
       title, subTitle, price, discount, description 
     });
+    console.log("**",subTitle);
 
     // Update packages collection with new content
     const result = await packages.updateOne(
+      
       { title: title },
+      
       {
         $push: {
           contents: {
             title: subTitle,
-            href: subTitle +".com",
+            href: subTitle ,
           },
         },
       },
@@ -70,6 +73,12 @@ export const createMainPackage = async (values:any) => {
 
 
 export const getAllmainPackage = () => mainPackage.find();
+
+// export const getmainPackage = (id:string) => 
+// mainPackage.find();
+export const getmainPackage = (subTitle: string) => mainPackage.findOne({subTitle:subTitle});
+
+
 
 export const updatemainPackages = (id:string,values:any) =>
 mainPackage.findByIdAndUpdate(id,values,{new:true})

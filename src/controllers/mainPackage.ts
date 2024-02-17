@@ -1,5 +1,6 @@
 import express from "express";
-import { createMainPackage,deletePackageDb,getAllmainPackage, updatemainPackages } from "../models/mainPackage.model";
+import { createMainPackage,deletePackageDb,getAllmainPackage, updatemainPackages,getmainPackage } from "../models/mainPackage.model";
+import { getAllPackage } from "./package";
 
 export const createMainPackages = async (
   req: express.Request,
@@ -34,6 +35,24 @@ export const getAllmainPackages= async (
   try {
     const Allpackage = await getAllmainPackage();
     return res.status(200).send(Allpackage)
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400)
+  }
+
+}
+
+export const getmainPackages= async (
+   
+  req:express.Request,
+  res:express.Response
+)=>{
+  const subTitle = req.params.id
+  // console.log("🚀 ~ subTitle:", subTitle)
+  try {
+    const singlepackage = await getmainPackage(subTitle);
+    // console.log("🚀 ~ singlepackage:", singlepackage)
+    return res.status(200).send(singlepackage)
   } catch (error) {
     console.log(error);
     return res.sendStatus(400)
