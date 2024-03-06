@@ -5,7 +5,7 @@ import { createNewUser } from "../utils/usersAuth";
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password, firstName, lastName, role, status } = req.body;
+    const { email, password, firstName, lastName, role, status,labId } = req.body;
     if (!email || !password || !firstName || !lastName || !role || !status) {
       throw new Error("send email, password and username");
     }
@@ -15,7 +15,8 @@ export const register = async (req: express.Request, res: express.Response) => {
       firstName,
       lastName,
       role,
-      status
+      status,
+      labId,
     );
 
     return res.send({ message: "Success", data: user });

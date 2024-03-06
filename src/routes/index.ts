@@ -5,6 +5,7 @@ import otp from "./otp";
 import labVendor from "./labVendor";
 import packages from "./package";
 import mainPackage from "./mainPackage";
+import doctor from "./doctor";
 
 
 const router = express.Router();
@@ -16,5 +17,6 @@ export default (): express.Router => {
   labVendor(router)
   packages(router)
   mainPackage(router)
+  doctor(router)
   return router;
 };

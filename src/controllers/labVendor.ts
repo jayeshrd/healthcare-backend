@@ -23,6 +23,7 @@ export const createLabVendor = async (
       labAvailability,
       labDocument,
       remark,
+      labAddress,
     } = req.body;
 
     const labVendor = await createVendor({
@@ -36,7 +37,8 @@ export const createLabVendor = async (
       licenceNumber,
       labAvailability,
       labDocument,
-      remark
+      remark,
+      labAddress,
     });
     console.log(labVendor);
 

@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
     require: true,
     default:"Active"
   },
+  labId: {
+    type: mongoose.Types.ObjectId,
+    // type: String,
+    ref: 'labVendor',
+    required: false,
+  },
   authentication: {
     password: { type: String, required: true, select: false },
     salt: { type: String, select: false },
@@ -33,19 +39,112 @@ const userSchema = new mongoose.Schema({
 export const UserModel = mongoose.model("User", userSchema);
 
 // utils
-export const getUsers = () => UserModel.find();
+// export const getUsers = () => UserModel.find();
+
+export const getUsers = async () => {
+  // console.log(paymentStatus);
+ 
+  let pipeline = [
+    {
+      $lookup: {
+        from: 'labvendors',
+        localField: 'labId',
+        foreignField: '_id',
+        as: 'labId',
+      },
+    },
+    {
+      $project: {
+        password: 0,
+      },
+    },
+  ];
+
+  
+  let users=await UserModel.aggregate(pipeline);
+
+  return users;
+};
+
 export const getUserByEmail = (email: string) => UserModel.findOne({ email });
 export const getUserBySessionToken = (sessionToken: string) =>
   UserModel.findOne({
     "authentication.sessionToken": sessionToken,
   });
-export const getUserById = (id: string) => UserModel.findById(id);
+  
+
+  // export const getUserById = async (id: any) => {
+  //   try {
+  //     let pipeline = [
+  //       {
+  //         $match: {
+  //           ObjectId: id
+  //         }
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: 'labvendors',
+  //           localField: 'labId',
+  //           foreignField: '_id',
+  //           as: 'labId',
+  //         },
+  //       }
+  //     ];
+  
+  //     let user = await UserModel.aggregate(pipeline);
+  
+  //     if (user.length === 0) {
+  //       console.log("No user found with the specified ID");
+  //     }
+  
+  //     return user;
+  //   } catch (error) {
+  //     console.error("Error fetching user:", error);
+  //     throw error; // Re-throw the error for handling it upstream
+  //   }
+  // };
+  // export const getUserById = (id: string) => UserModel.findById(id);
+  
+  export const getUserById = async (id: string) => {
+    try {
+      let pipeline = [
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(id) // Assuming you're using Mongoose and need to convert id to ObjectId
+          }
+        },
+        {
+          $lookup: {
+            from: 'labvendors',
+            localField: 'labId', // Assuming labId is the field in UserModel that corresponds to _id in labvendors collection
+            foreignField: '_id',
+            as: 'labId'
+          }
+        },
+        {
+          $project: {
+            password: 0
+          }
+        }
+      ];
+  
+      let user = await UserModel.aggregate(pipeline);
+  
+      return user;
+    } catch (error) {
+      console.error(error);
+      throw error; // Throw error for handling it in the caller function
+    }
+  };
+  
+
 // export const deleteUserById = (id: string) => UserModel.findByIdAndRemove(id);
 
 export const createUser = (values: Record<string, any>) => {
-  let { email, password, firstName, lastName,role,status } = values;
+  let { email, password, firstName, lastName,role,status,labId } = values;
   if (!validateEmail(email) || !validatePassword(password))
     throw new Error("invalid email or password format");
+console.log("labid",labId);
 
   firstName = firstName.trim();
   lastName = lastName.trim();
@@ -60,6 +159,7 @@ export const createUser = (values: Record<string, any>) => {
       salt,
       password: authentication(salt, password),
     },
+    labId,
   })
     .save()
     .then((user) => user.toObject());
@@ -83,6 +183,8 @@ export const createUser = (values: Record<string, any>) => {
 
 export const updateUserData = async (id: string, values: Record<string, any>) => {
   try {
+    console.log("v11",values);
+    
     if (values.password) {
       // If password is provided in the values, update password
       if (!validatePassword(values.password)) {

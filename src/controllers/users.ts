@@ -20,9 +20,11 @@ export const getAllUsers = async (
 };
 export const getUser = async (req: express.Request, res: express.Response) => {
   const id = req.params.id;
+  // console.log("🚀 ~ getUser ~ id:", id)
 
   try {
     const user = await getUserById(id);
+    // console.log("🚀 ~ getUser ~ user:", user)
     if (user) {
       return res.status(200).json(user);
     } else {

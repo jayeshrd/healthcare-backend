@@ -6,7 +6,8 @@ export const createNewUser = async (
   firstName: string,
   lastName: string,
   role:string,
-  status:string
+  status:string,
+  labId:string
 ) => {
   const existingUser = await getUserByEmail(email);
 
@@ -20,7 +21,8 @@ export const createNewUser = async (
     lastName,
     password,
     role,
-    status
+    status,
+    labId
   });
   return user;
 };

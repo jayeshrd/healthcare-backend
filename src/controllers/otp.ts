@@ -29,11 +29,11 @@ export const verifyOTP = async (
   res: express.Response
 ) => {
   try {
-    const { otp, firstName, lastName, email,role,status, password } = req.body;
+    const { otp, firstName, lastName, email,role,status, password ,labId} = req.body;
 
     await verifyOtpWithEmail(email, otp);
 
-    const user = await createNewUser(email, password, firstName, lastName,role,status);
+    const user = await createNewUser(email, password, firstName, lastName,role,status,labId);
 
     return res.send({ message: "OTP verified and User created", data: user });
   } catch (error) {

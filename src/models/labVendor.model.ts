@@ -80,6 +80,28 @@ const labVendorSchema = mongoose.Schema({
     type: String,
     default: " ",
   },
+  labAddress: [
+    {
+      line1: {
+        type: String,
+        required: false,
+      
+      },
+      line2: {
+        type: String,
+        required: false,
+      
+      },
+      landmark:{
+        type:String,
+        required:false
+      },
+      pincode:{
+        type:String,
+        required:false
+      }
+    },
+  ],
 });
 export const labVendor = mongoose.model("labVendor", labVendorSchema);
 
@@ -96,6 +118,7 @@ export const createVendor = async (values: Record<string, any>) => {
     labAvailability,
     labDocument,
     remark,
+    labAddress
   } = values;
 
   try {
@@ -111,6 +134,7 @@ export const createVendor = async (values: Record<string, any>) => {
       labAvailability,
       labDocument,
       remark,
+      labAddress
     });
 
     return newLabVendor.toObject();

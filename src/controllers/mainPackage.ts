@@ -8,8 +8,7 @@ export const createMainPackages = async (
 ) => {
   try {
     const { title, subTitle, price, discount, description } = req.body;
-    // console.log("🚀 ~ title:", title)
-
+  
     const packages = await createMainPackage({
       title,
       subTitle,
