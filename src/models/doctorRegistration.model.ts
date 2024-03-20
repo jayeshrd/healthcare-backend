@@ -115,3 +115,4 @@ export const createDoctor = async (values: Record<string, any>) => {
 };
 
 export const getAllDoctorData = () => doctorRegistration.find();
+
