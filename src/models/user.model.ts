@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
     salt: { type: String, select: false },
     sessionToken: { type: String, select: false },
   },
+  registeredDate: {
+    type: Date,
+    default: Date.now, // Stores the timestamp in UTC on user creation
+  },
 });
 export const UserModel = mongoose.model("User", userSchema);
 
